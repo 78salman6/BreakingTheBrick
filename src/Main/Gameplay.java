@@ -29,49 +29,55 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
     private Timer timer;
     private int delay=8;
     private int playerX=310;
+    //initial position of ball
     private int ballposX=120;
     private int ballposY=350;
+    //movement in x direction in every delay
     private int ballXdir=-1;
+    //movement in y direction in every delay
     private int ballYdir=-2;
-    
+    //create reference to object of map
     private MapGenerator map;
     
     public Gameplay() {
+        //create object of map
         map = new MapGenerator(3,7);
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
+        //make Timer object
         timer = new Timer(delay,this);
+        //start the thread
         timer.start();
     }
     
     public void paint(Graphics g) {
         //background
-        g.setColor(Color.black);
+        g.setColor(Color.WHITE);
         g.fillRect(1,1,692,592);
         
         //draw bricks(drawing maps)
         map.draw((Graphics2D)g); 
         
         //borders
-        g.setColor(Color.yellow);
+        g.setColor(Color.CYAN);
         g.fillRect(0,0,3,592);
         g.fillRect(0,0,692,3);
         g.fillRect(691,0,3,592);
         
         //scores
-        g.setColor(Color.WHITE);
+        g.setColor(Color.GREEN);
         g.setFont(new Font("serif",Font.BOLD,25));
         g.drawString(""+score, 590, 30);
         
         //paddle
-        g.setColor(Color.green);
+        g.setColor(Color.BLACK);
         g.fillRect(playerX,550,100,8);
         
         //the ball
-        g.setColor(Color.yellow);
+        g.setColor(Color.RED);
         g.fillOval(ballposX,ballposY,20,20);
-        
+        //if no brick remaining then you already won the match
         if(totalBricks<=0) {
             play=false;
             ballXdir=0;
@@ -82,14 +88,14 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
             g.setFont(new Font("serif",Font.BOLD,20));
             g.drawString("Press enter to restart", 230, 350);
         }
-        
+        //if user is unable to take ball on paddle then game over message will appear
         if(ballposY>570) {
             play=false;
             ballXdir=0;
             ballYdir=0;
             g.setColor(Color.RED);
             g.setFont(new Font("serif",Font.BOLD,30));
-            g.drawString("Game Over,Scores:"+score, 190, 300);
+            g.drawString("Game Over,Score:"+score, 190, 300);
             g.setFont(new Font("serif",Font.BOLD,20));
             g.drawString("Press enter to restart", 230, 350);
         }
@@ -106,6 +112,7 @@ public class Gameplay extends JPanel implements KeyListener,ActionListener{
     public void actionPerformed(ActionEvent e) {
         timer.start();
         if(play) {
+            //if ball strikes the paddle
             if(new Rectangle(ballposX,ballposY,20,20).intersects(new Rectangle(playerX,550,100,8))) {
                 ballYdir=-ballYdir;
             }
